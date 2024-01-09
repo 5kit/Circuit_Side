@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+
+<body>
+    <div style="margin: 50px"></div>
+    <div style="margin: 50px"></div>
+    <div style="float: right">
+        <div class="oBox"></div>
+        <p class="logo">CIRCUIT SIDE</p>
+        <div class="oBox"></div>
+    </div>
+    <p style="position: relative; width: 250px; float: left; left: 30px">
+        Welcome, {{ username }}!
+    </p>
+    <form action="/logout" method="post">
+        <button type="submit" style="width: 150px; height: 50px; flex-shrink: 0" class="left button">Logout</button>
+    </form>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
