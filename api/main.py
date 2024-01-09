@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, make_response
-from Classes.account import User
+from api.Classes.account import User
 import os
 
 app = Flask(__name__, static_url_path='/static')
