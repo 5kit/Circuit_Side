@@ -68,7 +68,7 @@ class User:
 
                     # Log in the new user
                     self.Login(new_name, new_pass)
-                    return True
+                    return ""
                 else:
                     return "Username is already taken."
             else:
@@ -86,12 +86,12 @@ class User:
                 ]:
                     AccDB.edit_entry({"Username" : new_name}, f"userID = '{self.__ID}'")
                     self.Username = new_name
-                    return "Username successfully changed"
+                    return ""
                 else:
                     return "Username is already taken."
             else:
                 return "Username should be within 4-12 characters."
-        return False
+        return "Not logged in!"
     
     def edit_Pass(self, old_pass, new_pass):
         if self.LoggedIn:
@@ -128,7 +128,7 @@ class User:
             "Circuit": "" })
 
         self.projects.append(Project(Pid, self.__ID, title, ""))
-        return "Project creation successful"
+        return ""
 
     def delete_project(self, index):
         if self.LoggedIn:

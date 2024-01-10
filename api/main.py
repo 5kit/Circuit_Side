@@ -1,72 +1,72 @@
-from flask import Flask, render_template, request, redirect, url_for, session, make_response
-from Classes.account import User
-import os
+from flask import Flask, redirect, url_for, render_template, request, session
+from datetime import timedelta
 
-app = Flask(__name__, static_url_path='/static')
-app.secret_key = os.urandom(24)
-usr = User()
-error = ""
+from api.Classes.account import User
+
+app = Flask(__name__)
+app.secret_key = "H7CtF-*hF*f-r6dD^-0gf8"
+app.permanent_session_lifetime = timedelta(minutes=30)
 
 
 @app.route('/')
 def home():
-    if usr.LoggedIn:
-        return redirect(url_for('dashboard'))
+    error = session["error"]
+    return render_template('index.html', error_message = error)
+
+@app.route("/user")
+def user():
+    if "user" in session:
+        user = session["user"].Username
+        return render_template('dashboard.html', username=user)
     else:
-        return render_template('index.html', error_message=error)
+        return redirect("/")
 
-@app.errorhandler(500)
-def internal_server_error(error):
-    return render_template('500.html'), 500
-
-@app.route('/dashboard')
-def dashboard():
-    if usr.LoggedIn:
-        return render_template('dashboard.html', username=usr.Username)
-    else:
-        return redirect(url_for('home'))
-
-@app.route('/login', methods=['POST'])
+@app.route("/login", methods=["POST", "GET"])
 def login():
-    global error
-    if request.method == 'POST':
-        username = request.form['login-username']
-        password = request.form['login-password']
-
-        error = usr.Login(username, password)
-        if usr.LoggedIn:
-            return redirect(url_for('dashboard'))
-        else:
-            return redirect(url_for('home'))
-    
-@app.route('/signup', methods=['POST'])
-def signup():
-    global error
-    if request.method == 'POST':
-        username = request.form['signup-username']
-        password = request.form['signup-password']
-        confirm = request.form['confirm-password']
+    if request.method == "POST":
+        usr = request.form['login-username']
+        pss = request.form['login-password']
         
-        if password == confirm:
-            error = usr.signUp(username, password)
-        else:
-            error = "Passwords dont match"
-        if usr.LoggedIn:
-            return redirect(url_for('dashboard'))
-        else:
-            return redirect(url_for('home'))
+        USR = User()
+        session["error"] = USR.Login(usr,pss)
+        if USR.LoggedIn:
+            session.permanent = True
+            session["user"] = USR
+            return redirect(url_for("user"))
+        return redirect("/")
+    else:
+        return redirect("/")
     
-@app.route('/logout', methods=['POST'])
+@app.route("/signup", methods=["POST", "GET"])
+def signup():
+    if request.method == "POST":
+        usr = request.form['signup-username']
+        pss = request.form['signup-password']
+        cfm = request.form['confirm-password']
+        
+        if pss == cfm:
+            USR = User()
+            session["error"] = USR.signUp(usr,pss)
+            if USR.LoggedIn:
+                session.permanent = True
+                session["user"] = USR
+                return redirect(url_for("user"))
+            return redirect("/")
+        else:
+            session["error"] = "Passwords dont match!"
+            return redirect("/")
+    else:
+        return redirect("/")
+
+@app.route("/logout", methods=["POST", "GET"])
 def logout():
-    usr.Logout()
-    session.clear()
-
-    response = make_response(redirect(url_for('home')))
-    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0'
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = '-1'
-
-    return response
+    if request.method == "POST":
+        session["user"].Logout()
+        session.pop("user", None)
+        return redirect("/")
+    else:
+        return redirect("/")
 
 if __name__ == '__main__':
+    session["error"] = ""
     app.run(debug=True)

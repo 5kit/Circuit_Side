@@ -22,9 +22,7 @@
                 <div style="margin: 30px"></div>
                 <input type="password" id="login-password" name="login-password" placeholder="Enter Password" />
                 <div style="margin: 50px"></div>
-                <button type="submit" style="width: 150px; height: 50px; flex-shrink: 0" class="left button">
-                    Login
-                </button>
+                <button type="submit" style="width: 150px; height: 50px; flex-shrink: 0" class="left button">Login</button>
             </form>
             <a onclick="toggleForm('signup')">Switch to Sign Up</a>
         </div>
@@ -38,17 +36,13 @@
                 <div style="margin: 15px"></div>
                 <input type="password" id="confirm-password" name="confirm-password" placeholder="Re-enter Password" />
                 <div style="margin: 50px"></div>
-                <button type="submit" style="width: 150px; height: 50px; flex-shrink: 0" class="left button">
-                    Sign Up
-                </button>
+                <button type="submit" style="width: 150px; height: 50px; flex-shrink: 0" class="left button">Sign Up</button>
             </form>
             <a onclick="toggleForm('login')">Switch to Login</a>
         </div>
         <div style="margin: 150px"></div>
-        <p class="error-message">{{ error_message }}</p>
     </div>
-
+    <p class="error_message"> {{ error_message }} </p>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
-
 </html>
