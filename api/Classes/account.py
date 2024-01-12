@@ -1,6 +1,7 @@
 import hashlib
 from .dbManager import Table
 from .project import Project
+import json
 
 
 # Hash algorithm
@@ -18,6 +19,31 @@ class User:
         self.Username = ""
         self.LoggedIn = False
         self.projects = []
+        
+    def to_json(self):
+        """
+        Serialize the object's attributes to JSON format.
+        """
+        user_json = {
+            "ID": self.__ID,
+            "Username": self.Username,
+            "LoggedIn": self.LoggedIn,
+            "projects": self.projects
+        }
+        return json.dumps(user_json)
+
+    def from_json(self, json_data):
+        """
+        Load attributes from a JSON format.
+        """
+        try:
+            user_data = json.loads(json_data)
+            self.__ID = user_data.get("ID", "")
+            self.Username = user_data.get("Username", "")
+            self.LoggedIn = user_data.get("LoggedIn", False)
+            self.projects = user_data.get("projects", [])
+        except json.JSONDecodeError as e:
+            print(f"Error decoding JSON: {e}")
 
     def Login(self, username, password):
         if not self.LoggedIn:

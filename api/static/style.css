@@ -121,7 +121,8 @@ a:hover {
 }
 
 
-.error-message {
+.error_message {
+    position: relative;
     color: #ff0000; 
     margin-left: 100px;
     font-size: 14px; 

@@ -1,72 +1,78 @@
 from flask import Flask, redirect, url_for, render_template, request, session
 from datetime import timedelta
+from flask_session import Session
 
-from api.Classes.account import User
+from Classes.account import User
+
 
 app = Flask(__name__)
 app.secret_key = "H7CtF-*hF*f-r6dD^-0gf8"
 app.permanent_session_lifetime = timedelta(minutes=30)
+app.config['SESSION_TYPE'] = 'filesystem'
 
+Session(app)
 
 @app.route('/')
 def home():
-    error = session["error"]
-    return render_template('index.html', error_message = error)
+    error = session.get("error", "")
+    return render_template('index.html', error_message=error)
 
-@app.route("/user")
-def user():
-    if "user" in session:
-        user = session["user"].Username
-        return render_template('dashboard.html', username=user)
+@app.route("/dashboard")
+def dashboard():
+    user_json = session.get("user")
+    if user_json:
+        usr = User()
+        usr.from_json(user_json)
+        return render_template('dashboard.html', username=usr.Username)
     else:
         return redirect("/")
 
-@app.route("/login", methods=["POST", "GET"])
+
+@app.route("/login", methods=["POST"])
 def login():
     if request.method == "POST":
-        usr = request.form['login-username']
-        pss = request.form['login-password']
-        
-        USR = User()
-        session["error"] = USR.Login(usr,pss)
-        if USR.LoggedIn:
-            session.permanent = True
-            session["user"] = USR
-            return redirect(url_for("user"))
-        return redirect("/")
+        username = request.form['login-username']
+        password = request.form['login-password']
+
+        user = User()
+        error = user.Login(username, password)
+
+        if user.LoggedIn:
+            session["user"] = user.to_json()
+            return redirect("/dashboard")
+        else:
+            session["error"] = error
+            return redirect("/")
     else:
         return redirect("/")
-    
-@app.route("/signup", methods=["POST", "GET"])
+
+@app.route("/signup", methods=["POST"])
 def signup():
     if request.method == "POST":
-        usr = request.form['signup-username']
-        pss = request.form['signup-password']
-        cfm = request.form['confirm-password']
-        
-        if pss == cfm:
-            USR = User()
-            session["error"] = USR.signUp(usr,pss)
-            if USR.LoggedIn:
-                session.permanent = True
-                session["user"] = USR
-                return redirect(url_for("user"))
-            return redirect("/")
+        username = request.form['signup-username']
+        password = request.form['signup-password']
+        confirm = request.form['confirm-password']
+
+        user = User()
+        if password == confirm:
+            error = user.signUp(username, password)
         else:
-            session["error"] = "Passwords dont match!"
+            error = "Passwords don't match"
+
+        if user.LoggedIn:
+            session["user"] = user.to_json()
+            return redirect("/dashboard")
+        else:
+            session["error"] = error
             return redirect("/")
     else:
         return redirect("/")
 
-@app.route("/logout", methods=["POST", "GET"])
+@app.route("/logout", methods=["POST"])
 def logout():
-    if request.method == "POST":
-        session["user"].Logout()
-        session.pop("user", None)
-        return redirect("/")
-    else:
-        return redirect("/")
+    session.pop("user", None)
+    return redirect("/")
+
 
 if __name__ == '__main__':
-    session["error"] = ""
     app.run(debug=True)

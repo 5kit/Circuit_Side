@@ -41,8 +41,8 @@
             <a onclick="toggleForm('login')">Switch to Login</a>
         </div>
         <div style="margin: 150px"></div>
+        <p class="error_message"> {{ error_message }} </p>
     </div>
-    <p class="error_message"> {{ error_message }} </p>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
