@@ -1,16 +1,16 @@
 from flask import Flask, redirect, url_for, render_template, request, session
 from datetime import timedelta
 from flask_session import Session
+import os
 
-from Classes.account import User
+from api.Classes.account import User
 
 
 app = Flask(__name__)
-app.secret_key = "H7CtF-*hF*f-r6dD^-0gf8"
-app.permanent_session_lifetime = timedelta(minutes=30)
-app.config['SESSION_TYPE'] = 'filesystem'
-
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
+
 
 @app.route('/')
 def home():
