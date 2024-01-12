@@ -2,7 +2,7 @@ from flask import Flask, redirect, url_for, render_template, request, session
 from datetime import timedelta
 from flask_session import Session
 
-from Classes.account import User
+from api.Classes.account import User
 
 
 app = Flask(__name__)
