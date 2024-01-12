@@ -20,6 +20,7 @@ def home():
 @app.route("/dashboard")
 def dashboard():
     user_json = session.get("user")
+    print(session)
     if user_json:
         usr = User()
         usr.from_json(user_json)
