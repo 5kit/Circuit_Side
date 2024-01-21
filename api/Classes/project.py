@@ -7,6 +7,15 @@ class Project:
         self.Title = Title
         self.circuit = Circuit
 
+    def to_json(self):
+        json_data = {
+            "ID" : self.projectID,
+            "uID" : self.userID,
+            "Title" : self.Title,
+            "Circuit" : self.circuit,
+        }
+        return json_data
+
     def save(self):
         ProjDB.edit_entry({"Title" :  self.Title, 
                             "Circuit" : self.circuit}, 

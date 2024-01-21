@@ -14,6 +14,7 @@ body {
     letter-spacing: 2px;
 }
 
+
 .logo {
     position: relative;
     font-weight: 300;
@@ -33,7 +34,7 @@ body {
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 }
 
-input {
+.inp {
     display: flex;
     position: relative;
     width: 100%;
@@ -48,7 +49,7 @@ input {
     flex-shrink: 0;
     border-radius: 10px;
     background: #FFF;
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 14px 14px 0px rgba(0, 0, 0, 0.25);
     color: #8F8F8F;
     font-family: Inter;
     font-size: 10px;
@@ -77,6 +78,16 @@ input:focus {
     background: #1D7874;
 }
 
+#Nav {
+    position: fixed;
+    background-color: #1D7874;
+    float: left;
+    height: 100%;
+    width: 200px;
+    top: 0px;
+    left: 0px;
+}
+
 .button:hover {
     background: #134f4c;
 }
@@ -103,6 +114,17 @@ input:focus {
     width: 60%;
     height: 40%;
     font-size: 32px;
+    max-width: 700px;
+}
+
+.w-box {
+    color: #071E22;
+    font-size: larger;
+    background-color: aliceblue;
+    width: 60%;
+    border-radius: 15px;
+    padding: 30px;
+    margin-top: 150px;
 }
 
 a {
@@ -120,6 +142,68 @@ a:hover {
     text-decoration: underline;
 }
 
+.Btn {
+    background-color: #1D7874; 
+    border: none;
+    outline: none;
+    border-radius: 50px;
+    width: 100px; 
+    height: 100px; 
+    color: #FFF; 
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); 
+    font-family: Inter;
+    font-size: 64px; 
+    font-style: normal; 
+    font-weight: 400; 
+    line-height: normal;
+}
+
+.Btn:hover {
+    background: #134f4c;
+}
+
+.scroll {
+    position: relative;
+    white-space: nowrap;
+    overflow-x: auto;
+    height: 150px;
+    width: 90%;
+}
+
+
+.card {
+    position: relative;
+    text-align: center;
+    color: #FFF;
+    flex: 0 0 auto;
+    float: left;
+    box-sizing: border-box;
+    width: 200px;
+    height: 100px;
+    padding: 20px;
+    background-color: #1D7874; 
+    border: none;
+    border-radius: 8px;
+    margin-right: 20px;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.card:hover {
+    color: #FFF;
+    background: #134f4c;
+    box-shadow: 0px 14px 14px 0px rgba(0, 0, 0, 0.25);
+}
+
+.s {
+    width: 100px;
+
+    background-color: #0eada5;
+}
+
+.s:hover {
+    background-color: #134f4c;
+}
 
 .error_message {
     position: relative;

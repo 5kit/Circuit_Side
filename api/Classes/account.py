@@ -21,27 +21,23 @@ class User:
         self.projects = []
         
     def to_json(self):
-        """
-        Serialize the object's attributes to JSON format.
-        """
+        # Serialize the object's attributes to JSON format.
         user_json = {
             "ID": self.__ID,
             "Username": self.Username,
             "LoggedIn": self.LoggedIn,
-            "projects": self.projects
+            "projects": {n : self.projects[n].to_json() for n in range(len(self.projects))}
         }
         return json.dumps(user_json)
 
     def from_json(self, json_data):
-        """
-        Load attributes from a JSON format.
-        """
+        # Load attributes from a JSON format.
         try:
             user_data = json.loads(json_data)
             self.__ID = user_data.get("ID", "")
             self.Username = user_data.get("Username", "")
             self.LoggedIn = user_data.get("LoggedIn", False)
-            self.projects = user_data.get("projects", [])
+            self.load_projects()
         except json.JSONDecodeError as e:
             print(f"Error decoding JSON: {e}")
 
@@ -133,7 +129,7 @@ class User:
             else:
                 return "Password should be within 5-12 characters."
 
-    def create_projects(self, title):
+    def create_projects(self, title=None):
         # Check for duplicate project title
         for i in self.projects:
             if i.Title == title:
@@ -145,6 +141,9 @@ class User:
             Pid = "P{0:04d}".format(num)
         else:
             Pid = "P0000"
+            
+        if title == None:
+            title = "Project" + str(len(self.projects) + 1)
 
         # Insert into database
         ProjDB.add_entry(

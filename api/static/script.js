@@ -10,6 +10,7 @@ function toggleForm(formType) {
     }
 }
 
+
 // Retrieve and set the form state on page load
 document.addEventListener('DOMContentLoaded', function() {
     var currentForm = localStorage.getItem('currentForm');

@@ -14,8 +14,7 @@ try:
 except ValueError:
     print(f"Error: Invalid DB_PORT value: {db_port_str}")
     # Handle the error or set a default value as needed
-    db_port = 5432  # Default port
-
+    db_port = 5432  # Default portf
 db_config = {
     "host": os.environ.get("DB_HOST"),
     "port": db_port,
