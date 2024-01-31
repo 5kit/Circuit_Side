@@ -5,22 +5,12 @@ import pymysql
 # Get database details from file
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"))
 
-# Assuming default port is 5432 if not specified
-db_port_str = os.environ.get("DB_PORT", "5432")
 
-# Validate and convert to integer
-try:
-    db_port = int(db_port_str)
-except ValueError:
-    print(f"Error: Invalid DB_PORT value: {db_port_str}")
-    # Handle the error or set a default value as needed
-    db_port = 5432  # Default portf
 db_config = {
     "host": os.environ.get("DB_HOST"),
-    "port": db_port,
     "user": os.environ.get("DB_USERNAME"),
     "password": os.environ.get("DB_PASSWORD"),
-    "database": os.environ.get("DB_NAME"),
+    "databace": os.environ.get("DB_NAME"),
 }
 
 class Table:
@@ -30,11 +20,17 @@ class Table:
     def query(self, columns="*", condition=None, order_by=None):
         # Make a connection
         with pymysql.connect(
-            host=db_config["host"],
-            user=db_config["user"],
-            password=db_config["password"],
-            database=db_config["database"],
-        ) as connection:
+                host=db_config["host"],
+                user=db_config["user"],
+                password=db_config["password"],
+                database=db_config["databace"],
+                autocommit=True,
+                ssl_verify_identity=True,
+                ssl= {
+                    "eu": "/etc/ssl/cert.pem"
+                }
+         )  as connection:
+            
             cursor = connection.cursor(pymysql.cursors.DictCursor)
 
             # Prepare SQL statement for querying data
@@ -52,18 +48,24 @@ class Table:
 
     def add_entry(self, data):
         with pymysql.connect(
-            host=db_config["host"],
-            user=db_config["user"],
-            password=db_config["password"],
-            database=db_config["database"],
-        ) as connection:
+                host=db_config["host"],
+                user=db_config["user"],
+                password=db_config["password"],
+                database=db_config["databace"],
+                autocommit=True,
+                ssl_verify_identity=True,
+                ssl= {
+                    "eu": "/etc/ssl/cert.pem"
+                }
+         )  as connection:
+        
             cursor = connection.cursor()
 
             # Construct the INSERT query
             columns = ", ".join(data.keys())
             values = ", ".join(["%s"] * len(data))
             query = f"INSERT INTO {self.table_name} ({columns}) VALUES ({values})"
-
+            
             try:
                 # Execute SQL
                 cursor.execute(query, tuple(data.values()))
@@ -74,11 +76,17 @@ class Table:
 
     def edit_entry(self, update_data, condition, additional_condition=None):
         with pymysql.connect(
-            host=db_config["host"],
-            user=db_config["user"],
-            password=db_config["password"],
-            database=db_config["database"],
-        ) as connection:
+                host=db_config["host"],
+                user=db_config["user"],
+                password=db_config["password"],
+                database=db_config["databace"],
+                autocommit=True,
+                ssl_verify_identity=True,
+                ssl= {
+                    "eu": "/etc/ssl/cert.pem"
+                }
+         )  as connection:
+            
             cursor = connection.cursor()
 
             # Construct the UPDATE query
@@ -96,11 +104,17 @@ class Table:
 
     def remove_entry(self, condition):
         with pymysql.connect(
-            host=db_config["host"],
-            user=db_config["user"],
-            password=db_config["password"],
-            database=db_config["database"],
-        ) as connection:
+                host=db_config["host"],
+                user=db_config["user"],
+                password=db_config["password"],
+                database=db_config["databace"],
+                autocommit=True,
+                ssl_verify_identity=True,
+                ssl= {
+                    "eu": "/etc/ssl/cert.pem"
+                }
+         )  as connection:
+        
             cursor = connection.cursor()
 
             # Construct the DELETE query
