@@ -108,7 +108,7 @@ class User:
                 ]:
                     AccDB.edit_entry({"Username" : new_name}, f"userID = '{self.__ID}'")
                     self.Username = new_name
-                    return ""
+                    return "Username changed Successfully."
                 else:
                     return "Username is already taken."
             else:
@@ -125,7 +125,7 @@ class User:
             # Verify new password and change entry
             if len(new_pass) >= 5 and len(new_pass) <= 12:
                 AccDB.edit_entry({"Password" : Hash256(new_pass)}, f"userID = '{self.__ID}'")
-                return ""
+                return "Password changed Successfully."
             else:
                 return "Password should be within 5-12 characters."
 
@@ -154,6 +154,18 @@ class User:
 
         self.projects.append(Project(Pid, self.__ID, title, ""))
         return ""
+    
+    def search_projects(self, query=None):
+        result = {}
+        for i in range(len(self.projects)):
+            if self.projects[i].Title.lower().startswith(query.lower()):
+                result[i] = {
+                    "ID" : self.projects[i].projectID,
+                    "uID" : self.projects[i].userID,
+                    "Title" : self.projects[i].Title,
+                    "Circuit" : self.projects[i].circuit,
+                }
+        return result
 
     def delete_project(self, index):
         if self.LoggedIn:
