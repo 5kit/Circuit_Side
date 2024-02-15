@@ -58,19 +58,26 @@
         <div style="margin-bottom: 50px;">
             <h3>Projects:</h3>
             <div class="scroll">
-                <div style="height: 140px; width: 300%;">
+                <div style="height: 200px; width: 300%;">
                     <form action="/create_project" method="post">
-                        <button type="submit" class="card s" style=" font-size: x-large;">+</button>
+                        <button type="submit" class="card s section" style=" font-size: x-large;">+</button>
                     </form>
                     {% for project_id, project_info in projects.items() %}
-                    <form action="/editor" method="post">
-                        <input type="hidden" name="project_id" value="{{ project_id }}">
-                        <button type="submit" class="card">
-                            <h2>{{ project_info['Title'] }}</h2>
-                        </button>
-                    </form>
+                    <div class="section">
+                        <form action="/open_edit" method="post">
+                            <input type="hidden" name="project_id" value="{{ project_id }}">
+                            <button type="submit" class="card">
+                                <h2>{{ project_info['Title'] }}</h2>
+                            </button>
+                        </form>
+                        <form action="/delete_project" method="post">
+                            <input type="hidden" name="project_id" value="{{ project_id }}">
+                            <button type="submit" class="red_card">
+                                <h3 style="transform: translate(0px,-20px);">Delete Project</h3>
+                            </button>
+                        </form>
+                    </div>
                     {% endfor %}
-
                 </div>
             </div>
         </div>

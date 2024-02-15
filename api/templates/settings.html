@@ -63,6 +63,11 @@
             <div style="margin: 20px;"></div>
             <button type="submit" style="width: 120px; height: 40px; flex-shrink: 0;" class="button">Confirm</button>
         </form>
+        <div style="margin:50px"></div>
+        <form action="/change" method="post">
+            <input type="hidden" name="val" value="remAcc">
+            <button type="submit" style="width: 200px; height: 40px; flex-shrink: 0;" class="red_card"> <h3 style="transform: translate(0px, -25px);">Delete Account</h3></button>
+        </form> 
         
         <div style="margin: 50px;"></div>
         <p class="error_message"> {{ error_message }} </p>

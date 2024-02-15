@@ -4,6 +4,8 @@ import pandas as pd
 import json
 
 from api.Classes.account import User
+from api.Classes.project import Project
+from api.Classes.editor import Open
 
 app = Flask(__name__)
 
@@ -12,10 +14,11 @@ app.config['SESSION_PERMANENT'] = True
 Session(app)
 
 # Reading CSV file into a DataFrame
-df = pd.read_csv('Classes/component.csv')  
+df = pd.read_csv('api/Classes/component.csv')  
 
 @app.route('/')
 def home():
+    session["Project"] = ""
     error = session.get("error", "")
     # Rendering the home page with an optional error message
     return render_template('index.html', error_message=error)  
@@ -24,11 +27,16 @@ def home():
 def dashboard():
     user_json = session.get("user")
     if user_json:
+        session["Project"] = ""
         usr = User()
         usr.from_json(user_json)
-        data = json.loads(user_json).get("projects")  # Extracting project data from user session
+        data = usr.projects
+        Projs = {}
+        if data:
+            for i in range(len(data)):
+                Projs[str(i)] = json.loads(data[i].to_json())
         Dc = df[['Code','Name']].to_dict(orient='index')  # Creating a dictionary for documentation
-        return render_template('dashboard.html', username=usr.Username, projects=data, Docs=Dc)
+        return render_template('dashboard.html', username=usr.Username, projects=Projs, Docs=Dc)
     else:
         return redirect("/")  # Redirecting to the home page if user is not logged in
 
@@ -55,6 +63,7 @@ def login():
 @app.route("/signup", methods=["POST"])
 def signup():
     if request.method == "POST":
+        # Gathering the user input
         username = request.form['signup-username']
         password = request.form['signup-password']
         confirm = request.form['confirm-password']
@@ -66,6 +75,7 @@ def signup():
             error = "Passwords don't match"
 
         if user.LoggedIn:
+            # Successful signup
             session["user"] = user.to_json()
             return redirect("/dashboard")
         else:
@@ -80,28 +90,121 @@ def CreateProject():
     if user_json:
         usr = User()
         usr.from_json(user_json)
-        usr.create_projects()
+        # Automatically create a Project name
+        newTitle = "Project" + str(len(usr.projects))
+        usr.create_projects(newTitle)
         # Saving user details after creating a project
         session["user"] = usr.to_json()  
         return redirect("/dashboard")
     else:
         return redirect("/")
+    
+@app.route("/delete_project", methods=["POST"])
+def DeleteProject():
+    n = int(request.form.get('project_id'))
+    user_json = session.get("user")
+    if user_json:
+        usr = User()
+        usr.from_json(user_json)
+        # Remove project and update user session
+        usr.delete_project(n)
+        session["user"] = usr.to_json()  
+        return redirect("/dashboard")
+    else:
+        # Redirecting to the home page if user is not logged in
+        return redirect("/")  
 
-@app.route('/editor', methods=['POST'])
+@app.route('/editor')
 def editor():
+    user_json = session.get("user")
+    prj_json = session.get("Project")
+    if user_json:
+        if prj_json:
+            Prj = Project()
+            Prj.from_json(prj_json)
+            error = session.get("error", "")
+            return render_template("editor.html", error_message=error ,Title=Prj.Title)
+        else:
+            return redirect("/dashboard")
+    else:
+        # Redirecting to the home page if user is not logged in  
+        return redirect("/")
+
+@app.route('/open_edit', methods=['POST'])
+def open_edit():
     n = int(request.form.get('project_id'))
     user_json = session.get("user")
     if user_json:
         usr = User()
         usr.from_json(user_json)
         usr.load_projects()
-        return render_template("editor.html", Title=usr.projects[n].Title, Circuit=usr.projects[n].circuit)
+        session["Project"] = usr.projects[n].to_json()
+        return redirect("/editor")
     else:
         # Redirecting to the home page if user is not logged in
-        return redirect("/")  
+        return redirect("/")
+    
+@app.route('/change_Title', methods=['POST'])
+def Change_Title():
+    prj_json = session.get("Project")
+    user_json = session.get("user")
+    newTitle = request.form.get('nTitle')
+    if user_json:
+        if prj_json and newTitle:
+            usr = User()
+            usr.from_json(user_json)
+            Prj = Project()
+            Prj.from_json(prj_json)
+            Prj.Title = newTitle
+            e = usr.check_title(newTitle)
+            if e:
+                session["error"] = e
+            else:
+                session["Project"] = Prj.to_json()
+            return redirect("/editor")
+        else:
+            return redirect("/dashboard")
+    else:
+        return redirect("/")
+
+@app.route('/edit', methods=['POST'])
+def edit():
+    user_json = session.get("user")
+    prj_json = session.get("Project")
+    if user_json:
+        if prj_json:
+            usr = User()
+            usr.from_json(user_json)
+            Prj = Project()
+            Prj.from_json(prj_json)
+            newCircuit = Open(Prj.circuit)
+            Prj.circuit = newCircuit
+            session["Project"] = Prj.to_json()
+            return redirect("/editor")
+        else:
+            return redirect("/dashboard")
+    else:
+        return redirect("/")
+        
+    
+@app.route('/save', methods=['POST'])
+def Save_project():
+    prj_json = session.get("Project", "")
+    user_json = session.get("user")
+    if user_json:
+        if prj_json:
+            Prj = Project()
+            Prj.from_json(prj_json)
+            Prj.save()
+            usr = User()
+            usr.from_json(user_json)
+        return redirect("/dashboard")
+    else:
+        return redirect("/")
     
 @app.route('/settings', methods=['POST', 'GET'])
 def settings():
+    session["Project"] = ""
     user_json = session.get("user")
     if user_json:
         usr = User()
@@ -136,13 +239,20 @@ def Change():
                 return redirect("/settings")
             else:
                 # Handling mismatched passwords
-                session["error"] = "Passwords dont match." 
+                session["error"] = "Passwords dont match."
+        elif type == 'remAcc':
+            usr.Delete_account()
+            session["error"] = "Account deleted successfully"
+            session.pop("user", None) 
+            session.pop("Project", None) 
+            return redirect('/')
     # Redirecting to the settings if unsuccessful
     return redirect("/settings")
 
 
 @app.route('/search', methods=['POST', 'GET'])
 def search():
+    session["Project"] = ""
     # Check if user is logged in
     user_json = session.get("user")
     if user_json:
@@ -172,7 +282,8 @@ def document():
 @app.route("/logout", methods=["POST"])
 def logout():
     # Logging out the user by removing user details from session
-    session.pop("user", None)  
+    session.pop("user", None) 
+    session.pop("Project", None)  
     return redirect("/")
 
 if __name__ == '__main__':

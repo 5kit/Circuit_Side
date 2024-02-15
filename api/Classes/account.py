@@ -26,7 +26,6 @@ class User:
             "ID": self.__ID,
             "Username": self.Username,
             "LoggedIn": self.LoggedIn,
-            "projects": {n : self.projects[n].to_json() for n in range(len(self.projects))}
         }
         return json.dumps(user_json)
 
@@ -129,21 +128,31 @@ class User:
             else:
                 return "Password should be within 5-12 characters."
 
-    def create_projects(self, title=None):
-        # Check for duplicate project title
-        for i in self.projects:
-            if i.Title == title:
-                return "title taken"
-        # Create a unique ID for database entry
-        q = ProjDB.query("projectID", None, "projectID DESC")
-        if q != ():
-            num = int(q[0]["projectID"][1:]) + 1
-            Pid = "P{0:04d}".format(num)
+    def check_title(self, Ntitle=""):
+        # Check for valid title
+        if len(Ntitle) >= 3:
+            for i in self.projects:
+                if i.Title == Ntitle:
+                    return "Title Taken"
+            return ""
         else:
-            Pid = "P0000"
-            
-        if title == None:
-            title = "Project" + str(len(self.projects) + 1)
+            return "Title should at least have 3 characters"
+
+    def create_projects(self, title=""):
+        e = self.check_title(title)
+        if e:
+            return e
+        else:
+            # Create a unique ID for database entry
+            q = ProjDB.query("projectID", None, "projectID DESC")
+            if q != ():
+                num = int(q[0]["projectID"][1:]) + 1
+                Pid = "P{0:04d}".format(num)
+            else:
+                Pid = "P0000"
+                
+            if title == None:
+                title = "Project" + str(len(self.projects) + 1)
 
         # Insert into database
         ProjDB.add_entry(
@@ -154,6 +163,7 @@ class User:
 
         self.projects.append(Project(Pid, self.__ID, title, ""))
         return ""
+            
     
     def search_projects(self, query=None):
         result = {}
