@@ -1,5 +1,8 @@
 from flask import Flask, redirect, url_for, render_template, request, session
 from flask_session import Session
+import redis
+from dotenv import load_dotenv
+import os
 import pandas as pd
 import json
 
@@ -7,10 +10,23 @@ from api.Classes.account import User
 from api.Classes.project import Project
 from api.Classes.editor import Open
 
+load_dotenv()
+
 app = Flask(__name__)
 
-app.config["SESSION_TYPE"] = "filesystem"
-app.config['SESSION_PERMANENT'] = True
+# Configure Redis connection
+REDIS_HOST = os.getenv('REDIS_HOST')
+REDIS_PORT = os.getenv('REDIS_PORT')
+REDIS_PASSWORD = os.getenv('REDIS_PASSWORD')
+
+# Set secret key for Flask session
+app.secret_key = 'w978r-hbfrw7-3gf9e7s-9gfsdh'
+
+# Configure Flask-Session to use Redis
+app.config['SESSION_TYPE'] = 'redis'
+app.config['SESSION_REDIS'] = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASSWORD)
+
+# Initialize Flask-Session
 Session(app)
 
 # Reading CSV file into a DataFrame
