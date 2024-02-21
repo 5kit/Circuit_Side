@@ -46,16 +46,35 @@
             <button type="submit" style="width: 120px; height: 40px; flex-shrink: 0;" class="button">Confirm</button>
         </form>
         <div style="margin: 50px;"></div>
-        <h3>Open the editor:</h3>
-        <form action="/edit" method="post">
-            <button type="submit" style="width: 120px; height: 40px; flex-shrink: 0;" class="button">Open</button>
-        </form>
+        <canvas oncontextmenu="return false;" id="Canvas" width="900" height="500" style="background: #ffffff;"></canvas>
         <div style="margin: 50px;"></div>
         <h3>Save and exit:</h3>
-        <form action="/save" method="post">
-            <button type="submit" style="width: 120px; height: 40px; flex-shrink: 0;" class="button">Exit</button>
-        </form>
+        <button type="submit" onclick="sendSave()" style="width: 120px; height: 40px; flex-shrink: 0;" class="button">Exit</button>
 		<div style="margin-top:30px;" class="error_message">{{error_message}}</div>
     </div>
+    <p id="jsn" style="size: 0;">{{ initial }}</p>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='editor.js') }}"></script>
+    <script>
+        var url = "{{ url_for('static', filename='') }}";
+        var data = {
+            'W': {'n': 'Wire', 'p': 2, 'w': 10, 'h': 10, 'a': url + "src/W.png", 'color': "#ff0000"}, 
+            'C00': {'n': 'Cell', 'p': 2, 'w': 30, 'h': 65, 'a': url + "src/C00.png", 'color': "#ff0000"}, 
+            'C01': {'n': 'Resistor', 'p': 2, 'w': 70, 'h': 40, 'a': url + "src/C01.png", 'color': "#ff0000"}, 
+            'C02': {'n': 'Switch', 'p': 2, 'w': 50, 'h': 30, 'a': url + "src/C02.png", 'color': "#ff0000"}, 
+            'C03': {'n': 'Bulb', 'p': 2, 'w': 50, 'h': 50, 'a': url + "src/C03.png", 'color': "#ff0000"}, 
+            'C04': {'n': 'LED', 'p': 2, 'w': 60, 'h': 40, 'a': url + "src/C04.png", 'color': "#ff0000"}, 
+            'C05': {'n': 'Diode', 'p': 2, 'w': 60, 'h': 40, 'a': url + "src/C05.png", 'color': "#ff0000"}, 
+            'C06': {'n': 'Variable Resistor', 'p': 2, 'w': 70, 'h': 40, 'a': url + "src/C06.png", 'color': "#ff0000"}, 
+            'C07': {'n': 'Button', 'p': 2, 'w': 50, 'h': 30, 'a': url + "src/C07.png", 'color': "#ff0000"}, 
+            'C08': {'n': 'Ammeter', 'p': 2, 'w': 50, 'h': 50, 'a': url + "src/C08.png", 'color': "#ff0000"}, 
+            'C09': {'n': 'Voltmeter', 'p': 2, 'w': 50, 'h': 50, 'a': url + "src/C09.png", 'color': "#ff0000"}, 
+            'C10': {'n': 'Potentiometer', 'p': 3, 'w': 70, 'h': 45, 'a': url + "src/C10.png", 'color': "#ff0000"}, 
+            'C11': {'n': 'Capacitor', 'p': 2, 'w': 30, 'h': 65, 'a': url + "src/C11.png", 'color': "#ff0000"}, 
+            'C12': {'n': 'NPN Transistor', 'p': 3, 'w': 60, 'h': 40, 'a': url + "src/C12.png", 'color': "#ff0000"}, 
+            'C13': {'n': 'PNP Transistor', 'p': 3, 'w': 60, 'h': 40, 'a': url + "src/C13.png", 'color': "#ff0000"},
+            'C14': {'n': 'Clock', 'p': 2, 'w': 35, 'h': 35, 'a': url + "src/C14.png", 'color': "#ff0000"}};
+        var json = document.getElementById('jsn').innerHTML;
+    </script>
 </body>
 </html>
