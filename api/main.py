@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, render_template, request, session
+from flask import Flask, redirect, render_template, request, session
 from flask_session import Session
 import redis
 from dotenv import load_dotenv
@@ -8,7 +8,7 @@ import json
 
 from api.Classes.account import User
 from api.Classes.project import Project
-from api.Classes.editor import Open
+
 
 load_dotenv()
 
@@ -139,7 +139,7 @@ def editor():
             Prj = Project()
             Prj.from_json(prj_json)
             error = session.get("error", "")
-            return render_template("editor.html", error_message=error ,Title=Prj.Title)
+            return render_template("editor.html", error_message=error ,Title=Prj.Title, initial=Prj.circuit)
         else:
             return redirect("/dashboard")
     else:
@@ -182,25 +182,6 @@ def Change_Title():
             return redirect("/dashboard")
     else:
         return redirect("/")
-
-@app.route('/edit', methods=['POST'])
-def edit():
-    user_json = session.get("user")
-    prj_json = session.get("Project")
-    if user_json:
-        if prj_json:
-            usr = User()
-            usr.from_json(user_json)
-            Prj = Project()
-            Prj.from_json(prj_json)
-            newCircuit = Open(Prj.circuit)
-            Prj.circuit = newCircuit
-            session["Project"] = Prj.to_json()
-            return redirect("/editor")
-        else:
-            return redirect("/dashboard")
-    else:
-        return redirect("/")
         
     
 @app.route('/save', methods=['POST'])
@@ -211,12 +192,11 @@ def Save_project():
         if prj_json:
             Prj = Project()
             Prj.from_json(prj_json)
+            Prj.circuit = request.json
             Prj.save()
-            usr = User()
-            usr.from_json(user_json)
-        return redirect("/dashboard")
+        return redirect('/dashboard')
     else:
-        return redirect("/")
+        return redirect('/')
     
 @app.route('/settings', methods=['POST', 'GET'])
 def settings():
