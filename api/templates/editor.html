@@ -52,7 +52,7 @@
         <button type="submit" onclick="sendSave()" style="width: 120px; height: 40px; flex-shrink: 0;" class="button">Exit</button>
 		<div style="margin-top:30px;" class="error_message">{{error_message}}</div>
     </div>
-    <p id="jsn" style="size: 0;">{{ initial }}</p>
+    <p id="jsn" style="display: None;">{{ initial }}</p>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ url_for('static', filename='editor.js') }}"></script>
     <script>
