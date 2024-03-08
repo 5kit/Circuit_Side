@@ -38,6 +38,11 @@
     <div style="float: left; margin-left: 220px; width: 80%;">
         <h1> {{ Title }} </h1>
         <div style="margin: 50px;"></div>
+        <canvas oncontextmenu="return false;" onscroll="return false;" id="Canvas" width="1400" height="800" style="background: #ffffff;"></canvas>
+        		<div style="margin: 50px;"></div>
+        <h3>Save and exit:</h3>
+        <button type="submit" onclick="sendSave()" style="width: 120px; height: 40px; flex-shrink: 0;" class="button">Exit</button>
+		<div style="margin: 50px;"></div>
         <h3>Change Title:</h3>
         <form action="/change_Title" method="post">
             <input type="hidden" name="val" value="name">
@@ -45,14 +50,9 @@
             <div style="margin: 20px;"></div>
             <button type="submit" style="width: 120px; height: 40px; flex-shrink: 0;" class="button">Confirm</button>
         </form>
-        <div style="margin: 50px;"></div>
-        <canvas oncontextmenu="return false;" id="Canvas" width="900" height="500" style="background: #ffffff;"></canvas>
-        <div style="margin: 50px;"></div>
-        <h3>Save and exit:</h3>
-        <button type="submit" onclick="sendSave()" style="width: 120px; height: 40px; flex-shrink: 0;" class="button">Exit</button>
-		<div style="margin-top:30px;" class="error_message">{{error_message}}</div>
+		<div style="margin-top:30px; margin-bottom:10px;" class="error_message">{{error_message}}</div>
     </div>
-    <p id="jsn" style="display: None;">{{ initial }}</p>
+    <p id="jsn" hidden>{{ initial }}</p>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ url_for('static', filename='editor.js') }}"></script>
     <script>
