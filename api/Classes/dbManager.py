@@ -9,6 +9,7 @@ load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"))
 db_config = {
     "host": os.environ.get("DB_HOST"),
     "user": os.environ.get("DB_USERNAME"),
+    "port": int(os.environ.get("PORT")),
     "password": os.environ.get("DB_PASSWORD"),
     "databace": os.environ.get("DB_NAME"),
 }
@@ -21,14 +22,11 @@ class Table:
         # Make a connection
         with pymysql.connect(
                 host=db_config["host"],
+                port=db_config["port"],
                 user=db_config["user"],
                 password=db_config["password"],
                 database=db_config["databace"],
                 autocommit=True,
-                ssl_verify_identity=True,
-                ssl= {
-                    "eu": "/etc/ssl/cert.pem"
-                }
          )  as connection:
             
             cursor = connection.cursor(pymysql.cursors.DictCursor)
@@ -49,14 +47,11 @@ class Table:
     def add_entry(self, data):
         with pymysql.connect(
                 host=db_config["host"],
+                port=db_config["port"],
                 user=db_config["user"],
                 password=db_config["password"],
                 database=db_config["databace"],
                 autocommit=True,
-                ssl_verify_identity=True,
-                ssl= {
-                    "eu": "/etc/ssl/cert.pem"
-                }
          )  as connection:
         
             cursor = connection.cursor()
@@ -77,14 +72,11 @@ class Table:
     def edit_entry(self, update_data, condition, additional_condition=None):
         with pymysql.connect(
                 host=db_config["host"],
+                port=db_config["port"],
                 user=db_config["user"],
                 password=db_config["password"],
                 database=db_config["databace"],
                 autocommit=True,
-                ssl_verify_identity=True,
-                ssl= {
-                    "eu": "/etc/ssl/cert.pem"
-                }
          )  as connection:
             
             cursor = connection.cursor()
@@ -105,14 +97,11 @@ class Table:
     def remove_entry(self, condition):
         with pymysql.connect(
                 host=db_config["host"],
+                port=db_config["port"],
                 user=db_config["user"],
                 password=db_config["password"],
                 database=db_config["databace"],
                 autocommit=True,
-                ssl_verify_identity=True,
-                ssl= {
-                    "eu": "/etc/ssl/cert.pem"
-                }
          )  as connection:
         
             cursor = connection.cursor()
